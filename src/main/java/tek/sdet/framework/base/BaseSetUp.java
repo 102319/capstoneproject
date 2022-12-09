@@ -1,0 +1,98 @@
+package tek.sdet.framework.base;
+
+import java.io.FileNotFoundException;
+import java.time.Duration;
+import java.util.HashMap;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.openqa.selenium.WebDriver;
+
+import tek.sdet.framework.config.Browser;
+import tek.sdet.framework.config.ChromeBrowser;
+import tek.sdet.framework.config.ChromeHeadlessBrowser;
+import tek.sdet.framework.config.EdgeBrowser;
+import tek.sdet.framework.config.FirefoxBrowser;
+import tek.sdet.framework.utilities.ReadYamlFiles;
+
+
+public class BaseSetUp {
+	
+	
+	private static WebDriver driver;
+	private final ReadYamlFiles environmentVariables;
+	public static Logger logger;
+	
+	
+	
+	
+	
+	public BaseSetUp() {
+		String yamlFile = System.getProperty("user.dir")+"/src/main/resources/env-config.yml";
+		String log4jFiles = System.getProperty("user.dir")+"/src/main/resources/log4j.properties";
+		
+		try {
+			environmentVariables = ReadYamlFiles.getInstanceYamlFiles(yamlFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("wrong file path address");
+			throw new RuntimeException("errors to the file path"+e.getMessage());
+		}
+		
+		logger = Logger.getLogger("Logger_files");
+		PropertyConfigurator.configure(log4jFiles);
+			
+		
+	}
+	
+	
+	public WebDriver getDriver() {
+		return driver;
+		
+	}
+	
+	
+	public void setUpBrowser() {
+		HashMap uiProperties = environmentVariables.getYamlProperty("ui");
+		String url = uiProperties.get("url").toString();
+		Browser browser;
+		switch(uiProperties.get("browser").toString().toLowerCase().trim()) {
+		case"chrome":
+			if((boolean) uiProperties.get("headless")) {
+				browser = new ChromeHeadlessBrowser();
+			}else {
+				browser = new ChromeBrowser();
+			}
+			driver = browser.openBrowser(url);
+			break;
+		case"firefox":
+			browser = new FirefoxBrowser();
+			driver = browser.openBrowser(url);
+			break;
+		case"edge":
+			browser = new EdgeBrowser();
+			driver = browser.openBrowser(url);
+			break;
+			default:
+				throw new RuntimeException("invalid browser type");
+				
+		}
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		
+	}
+	
+	
+	
+	public void quitBrowser() {
+		if(driver != null) {
+			driver.quit();
+		}
+	}
+	
+	
+	
+	
+
+}
+
+
