@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)	
 @CucumberOptions(
 	
-	tags = "@signIn",
+	tags = "@signUp",
 	features = "src/test/resources/featur_copstone",
 	glue = "tek.sdet.framework",
 	dryRun = false,

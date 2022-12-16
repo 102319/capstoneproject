@@ -60,7 +60,7 @@ Feature: Retail Account Page
     And User click on edit address option
     And user fill new address form  with below information
       | country     | fullName | phoneNumber | streetAddress | apt | city  | state      | zipCode |
-      | Afghanistan | naveed   |  9160944598 | 123 bob st    |  33 | Kabul | Badakhshan |   22334 |
+      | Afghanistan | farva  |  9160944598 | 123 bob st    |  33 | Kabul | Badakhshan |   22334 |
     And User click update Your Address button
     Then a message should be displayed ‘Address Updated Successfully’
 
